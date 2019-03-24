@@ -3,7 +3,6 @@ package by.epam.thirdtask.reader;
 import by.epam.thirdtask.comparator.ExcelCellComparator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -46,11 +45,10 @@ public class ExcelReader
             }
         }
 
-        for(ExcelCell excelCell : cells)
+        for(ExcelCell cell: cells)
         {
-            System.out.println(excelCell.getData()+"<-"+ excelCell.getParentData()+" "+excelCell.getFirstColumn()+"-"+excelCell.getLastColumn());
+            System.out.println(cell.getData()+"<-"+cell.getParentData());
         }
-
         return cells;
     }
 
@@ -79,7 +77,7 @@ public class ExcelReader
         while(iterator.hasNext())
         {
             Cell cell=iterator.next();
-            String value=cell.getStringCellValue();
+            String value=findName(cell);
             ExcelCell data=new ExcelCell("", "", cell.getColumnIndex(), cell.getColumnIndex());
             for(CellRangeAddress region: regions)
             {
@@ -91,7 +89,7 @@ public class ExcelReader
                         XSSFRow rowWithName=sheet.getRow(region.getFirstRow());
                         cellWithName=rowWithName.getCell(cell.getColumnIndex());
                     }
-                    value=cellWithName.getStringCellValue();
+                    value=findName(cellWithName);
                     while (cell.getColumnIndex()<region.getLastColumn())
                     {
                         cell=iterator.next();
@@ -104,5 +102,35 @@ public class ExcelReader
             result.add(data);
         }
         return result;
+    }
+
+    private String findName(Cell cell)
+    {
+        String name="";
+        switch (cell.getCellType())
+        {
+            case STRING:
+                name=cell.getStringCellValue();
+                break;
+            case NUMERIC:
+                name=String.valueOf(cell.getNumericCellValue());
+                break;
+            case FORMULA:
+                name=cell.getCellFormula();
+                break;
+            case BLANK:
+                name=cell.getStringCellValue();
+                break;
+            case ERROR:
+                name=String.valueOf(cell.getErrorCellValue());
+                break;
+            case BOOLEAN:
+                name=String.valueOf(cell.getBooleanCellValue());
+                break;
+            case _NONE:
+                name=cell.getStringCellValue();
+                break;
+        }
+        return name;
     }
 }

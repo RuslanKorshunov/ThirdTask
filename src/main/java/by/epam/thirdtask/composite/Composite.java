@@ -1,29 +1,41 @@
 package by.epam.thirdtask.composite;
 
+import by.epam.thirdtask.reader.ExcelCell;
+
 public abstract class Composite
 {
     public void operation()
     {
-        throw new UnsupportedOperationException(getClass().getName()+" doesn't support this operation");
+        //throw new UnsupportedOperationException(getClass().getName()+" doesn't support this operation");
     }
 
-    public boolean add(Composite composite)
+    public boolean addNewComponent(Composite composite)
     {
-        throw new UnsupportedOperationException(getClass().getName()+" doesn't support this operation");
+        return false;
+    }
+
+    public boolean addNewComponent(ExcelCell excelCell)
+    {
+        return false;
+    }
+
+    public boolean addNewBaseElement(ExcelCell excelCell)
+    {
+        return false;
     }
 
     public boolean remove(Composite composite)
     {
-        throw new UnsupportedOperationException(getClass().getName()+" doesn't support this operation");
+        return false;
     }
 
     public Composite get(int index)
     {
-        throw new UnsupportedOperationException(getClass().getName()+" doesn't support this operation");
+        return null;
     }
 
     public String getName()
     {
-        throw new UnsupportedOperationException(getClass().getName()+" doesn't support this operation");
+        return null;
     }
 }
