@@ -1,41 +1,100 @@
 package by.epam.thirdtask.composite;
 
-import by.epam.thirdtask.reader.ExcelCell;
+import by.epam.thirdtask.entity.ExcelData;
 
-public abstract class Composite
+import java.util.ArrayList;
+import java.util.List;
+
+public class Composite extends Component
 {
+    private String name;
+    private List<Component> components =new ArrayList<>();
+
+    public Composite()
+    {
+        name="";
+    }
+
+    public Composite(String name)
+    {
+        this.name=name;
+    }
+
     public void operation()
     {
-        //throw new UnsupportedOperationException(getClass().getName()+" doesn't support this operation");
+        System.out.println(name);
+        components.forEach(Component::operation);
     }
 
-    public boolean addNewComponent(Composite composite)
+    @Override
+    public boolean addNewComponent(Component component)
     {
-        return false;
+        return components.add(component);
     }
 
-    public boolean addNewComponent(ExcelCell excelCell)
+    @Override
+    public boolean addNewComponent(ExcelData excelData)
     {
-        return false;
+        boolean result=false;
+        String dataParent= excelData.getParentData();
+        String data= excelData.getData();
+        if(name.equals(dataParent) && !data.equals(dataParent))
+        {
+            Component component=new Composite(data);
+            result=components.add(component);
+        }
+        else
+        {
+            for(Component component: components)
+            {
+                result=component.addNewComponent(excelData);
+                //TODO спросить про использование прерываний
+            }
+        }
+        return result;
     }
 
-    public boolean addNewBaseElement(ExcelCell excelCell)
+    @Override
+    public boolean addNewBaseElement(ExcelData excelData)
     {
-        return false;
+        boolean result=false;
+        String dataParent= excelData.getParentData();
+        String data= excelData.getData();
+        if(name.equals(dataParent) && !data.equals(dataParent))
+        {
+            Component baseElement=new BaseElement(data);
+            result=components.add(baseElement);
+        }
+        else
+        {
+            for(Component component: components)
+            {
+                result=component.addNewBaseElement(excelData);
+                if(result)
+                {
+                    break;
+                }
+                //TODO спросить про использование прерываний
+            }
+        }
+        return result;
     }
 
-    public boolean remove(Composite composite)
+    @Override
+    public boolean remove(Component component)
     {
-        return false;
+        return components.remove(component);
     }
 
-    public Composite get(int index)
+    @Override
+    public Component get(int index)
     {
-        return null;
+        return components.get(index);
     }
 
+    @Override
     public String getName()
     {
-        return null;
+        return name;
     }
 }

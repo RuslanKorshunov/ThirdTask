@@ -1,19 +1,18 @@
-package by.epam.thirdtask.reader;
+package by.epam.thirdtask.entity;
 
-public class ExcelCell //TODO спросить про имя и куда вынести
+public class ExcelData //TODO спросить про имя и куда вынести
 {
     private String data;
     private String parentData;
     private int firstColumn;
     private int lastColumn;
 
-    public ExcelCell(String data, String parentData, int firstColumn, int lastColumn)
+    public ExcelData(String data, String parentData, int firstColumn, int lastColumn)
     {
         this.data = data;
         this.parentData = parentData;
         this.firstColumn=firstColumn;
         this.lastColumn=lastColumn;
-
     }
 
     public String getData()

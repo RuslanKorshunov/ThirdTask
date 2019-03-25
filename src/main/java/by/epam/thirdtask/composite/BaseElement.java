@@ -1,6 +1,6 @@
 package by.epam.thirdtask.composite;
 
-public class BaseElement extends Composite
+public class BaseElement extends Component
 {
     private String name;
 
