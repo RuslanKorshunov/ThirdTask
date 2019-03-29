@@ -1,33 +1,34 @@
 package by.epam.thirdtask.action;
 
 import by.epam.thirdtask.exception.IncorrectDataException;
+import by.epam.thirdtask.interpreter.Context;
+import by.epam.thirdtask.interpreter.InterpreterConstant;
+import by.epam.thirdtask.interpreter.MathExpression;
+import by.epam.thirdtask.interpreter.ReversePolishNotationParser;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
 
 public class MathAction
 {
-    private static final String SPACE="\\s";
-    private static final String MINUS="-";
-    private static final String PLUS="+";
-    private static final String MULTIPLY="*";
-    private static final String DIVIDE="/";
-    private static final String LEFT_BRACKET="(";
-    private static final String RIGHT_BRACKET=")";
-
     public String calculateReversePolishNotation(String formula) throws IncorrectDataException
     {
+        if(formula==null)
+        {
+            throw new IncorrectDataException("formula can't be null.");
+        }
         StringBuffer exit=new StringBuffer();
         Deque<String> deque=new ArrayDeque<>();
-        for(String symbolCurrent: formula.split(SPACE))
+        for(String symbolCurrent: formula.split(InterpreterConstant.SPACE))
         {
             switch (symbolCurrent)
             {
-                case PLUS:
-                case MINUS:
+                case InterpreterConstant.PLUS:
+                case InterpreterConstant.MINUS:
                     if(!deque.isEmpty())
                     {
-                        if(!deque.peekLast().equals(LEFT_BRACKET))
+                        if(!deque.peekLast().equals(InterpreterConstant.LEFT_BRACKET))
                         {
                             String symbol=deque.pollLast();
                             exit.append(symbol+" ");
@@ -35,13 +36,13 @@ public class MathAction
                     }
                     deque.offerLast(symbolCurrent);
                     break;
-                case DIVIDE:
-                case MULTIPLY:
+                case InterpreterConstant.DIVIDE:
+                case InterpreterConstant.MULTIPLY:
                     if(!deque.isEmpty())
                     {
-                        if(!deque.peekLast().equals(LEFT_BRACKET) &&
-                                !deque.peekLast().equals(MINUS) &&
-                                !deque.peekLast().equals(PLUS))
+                        if(!deque.peekLast().equals(InterpreterConstant.LEFT_BRACKET) &&
+                                !deque.peekLast().equals(InterpreterConstant.MINUS) &&
+                                !deque.peekLast().equals(InterpreterConstant.PLUS))
                         {
                             String symbol=deque.pollLast();
                             exit.append(symbol+" ");
@@ -49,11 +50,11 @@ public class MathAction
                     }
                     deque.offerLast(symbolCurrent);
                     break;
-                case LEFT_BRACKET:
+                case InterpreterConstant.LEFT_BRACKET:
                     deque.offerLast(symbolCurrent);
                     break;
-                case RIGHT_BRACKET:
-                    while(!deque.peekLast().equals(LEFT_BRACKET))
+                case InterpreterConstant.RIGHT_BRACKET:
+                    while(!deque.peekLast().equals(InterpreterConstant.LEFT_BRACKET))
                     {
                         String symbol=deque.pollLast();
                         exit.append(symbol+" ");
@@ -63,14 +64,12 @@ public class MathAction
                 default:
                     try
                     {
-                        Integer.parseInt(symbolCurrent);
-                        exit.append(symbolCurrent+" ");
+                        exit.append(Double.parseDouble(symbolCurrent)+" ");
                     }
-                    catch(NumberFormatException e)
+                    catch(NumberFormatException e)//TODO правильно ли так делать?
                     {
-                        throw new IncorrectDataException("formula doesn't have "+symbolCurrent);
+                        throw new IncorrectDataException("formula can't have "+symbolCurrent+".");
                     }
-                    break;
             }
         }
         while(!deque.isEmpty())
@@ -79,5 +78,15 @@ public class MathAction
             exit.append(symbol+" ");
         }
         return exit.toString();
+    }
+
+    //TODO куда вынести метод
+    public String calculate(String polishNotation) throws IncorrectDataException
+    {
+        ReversePolishNotationParser parser=new ReversePolishNotationParser();
+        List<MathExpression> mathExpressionList=parser.parse(polishNotation);
+        Context context=new Context();
+        mathExpressionList.forEach((mathExpression)->mathExpression.interpret(context));
+        return String.valueOf(context.pop());
     }
 }
