@@ -1,12 +1,19 @@
 package by.epam.thirdtask.composite;
 
+import by.epam.thirdtask.action.MathAction;
 import by.epam.thirdtask.entity.ExcelData;
+import by.epam.thirdtask.exception.IncorrectDataException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.poi.ss.usermodel.CellType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Composite extends Component
 {
+    private static final Logger logger= LogManager.getLogger(Composite.class);
+
     private String name;
     private List<Component> components =new ArrayList<>();
 
@@ -22,8 +29,15 @@ public class Composite extends Component
 
     public void operation()
     {
-        System.out.println(name);
-        components.forEach(Component::operation);
+        for(Component component: components)
+        {
+            if(component.getClass()==BaseElement.class)
+            {
+
+            }
+        }
+        /*System.out.println(name);
+        components.forEach(Component::operation);*/
     }
 
     @Override
@@ -45,11 +59,12 @@ public class Composite extends Component
         }
         else
         {
-            for(Component component: components)
+            components.forEach(component -> component.addNewComponent(excelData));
+            /*for(Component component: components)
             {
                 result=component.addNewComponent(excelData);
                 //TODO спросить про использование прерываний
-            }
+            }*/
         }
         return result;
     }
@@ -62,12 +77,27 @@ public class Composite extends Component
         String data= excelData.getData();
         if(name.equals(dataParent) && !data.equals(dataParent))
         {
+            if(excelData.getCellType().equals(CellType.FORMULA))
+            {
+                try
+                {
+                    MathAction mathAction=new MathAction();
+                    String polishNotation=mathAction.calculateReversePolishNotation(data);
+                    data=mathAction.calculate(polishNotation);
+                }
+                catch(IncorrectDataException e)
+                {
+                    logger.error(e);
+                    data="";
+                }
+            }
             Component baseElement=new BaseElement(data);
             result=components.add(baseElement);
         }
         else
         {
-            for(Component component: components)
+            components.forEach(component -> component.addNewBaseElement(excelData));
+            /*for(Component component: components)
             {
                 result=component.addNewBaseElement(excelData);
                 if(result)
@@ -75,7 +105,7 @@ public class Composite extends Component
                     break;
                 }
                 //TODO спросить про использование прерываний
-            }
+            }*/
         }
         return result;
     }
@@ -96,5 +126,13 @@ public class Composite extends Component
     public String getName()
     {
         return name;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder result=new StringBuilder(name+"\n");
+        components.forEach(component -> result.append(component.toString()));
+        return result.toString();
     }
 }

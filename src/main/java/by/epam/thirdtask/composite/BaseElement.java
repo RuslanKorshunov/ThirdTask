@@ -12,11 +12,20 @@ public class BaseElement extends Component
     @Override
     public void operation()
     {
+
         System.out.println(name);
     }
 
     @Override
-    public String getName() {
+    public String getName()
+    {
         return name;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder result=new StringBuilder(name+"\n");
+        return result.toString();
     }
 }

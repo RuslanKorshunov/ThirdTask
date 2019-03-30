@@ -10,7 +10,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
-public class MathAction
+public class MathAction//TODO как назвать класс?
 {
     public String calculateReversePolishNotation(String formula) throws IncorrectDataException
     {
@@ -18,7 +18,7 @@ public class MathAction
         {
             throw new IncorrectDataException("formula can't be null.");
         }
-        StringBuffer exit=new StringBuffer();
+        StringBuilder exit=new StringBuilder();
         Deque<String> deque=new ArrayDeque<>();
         for(String symbolCurrent: formula.split(InterpreterConstant.SPACE))
         {

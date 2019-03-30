@@ -84,7 +84,7 @@ public class ExcelReader
         {
             Cell cell=iterator.next();
             String value=findName(cell);
-            ExcelData data=new ExcelData("", "", cell.getColumnIndex(), cell.getColumnIndex());
+            ExcelData data=new ExcelData("", "", cell.getColumnIndex(), cell.getColumnIndex(), cell.getCellType());
             for(CellRangeAddress region: regions)
             {
                 if(region.isInRange(cell))
