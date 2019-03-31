@@ -4,8 +4,11 @@ import by.epam.thirdtask.composite.Composite;
 import by.epam.thirdtask.exception.IncorrectDataException;
 import by.epam.thirdtask.parser.RowParser;
 import by.epam.thirdtask.parser.TableHeaderRowParser;
+import by.epam.thirdtask.writer.ExcelWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
 
 public class Main
 {
@@ -18,8 +21,9 @@ public class Main
         {
             RowParser parser=new TableHeaderRowParser(0);
             parser.parse(composite2);
-            composite2.operation();
-            System.out.println(composite2.toString());
+            /*composite2.operation();
+            System.out.println(composite2.toString());*/
+            System.out.println(composite2.findHight());
         }
         catch(IncorrectDataException e)
         {

@@ -30,7 +30,7 @@ public class MathAction//TODO как назвать класс?
                     {
                         if(!deque.peekLast().equals(InterpreterConstant.LEFT_BRACKET))
                         {
-                            String symbol=deque.pollLast();
+                            String symbol=deque.pollLast();//TODO излишне?
                             exit.append(symbol+" ");
                         }
                     }
@@ -83,6 +83,14 @@ public class MathAction//TODO как назвать класс?
     //TODO куда вынести метод
     public String calculate(String polishNotation) throws IncorrectDataException
     {
+        if(polishNotation==null)
+        {
+            throw new IncorrectDataException("polishNotation can't be null.");
+        }
+        if(polishNotation.equals(""))
+        {
+            throw new IncorrectDataException("polishNotation can't be empty.");
+        }
         ReversePolishNotationParser parser=new ReversePolishNotationParser();
         List<MathExpression> mathExpressionList=parser.parse(polishNotation);
         Context context=new Context();

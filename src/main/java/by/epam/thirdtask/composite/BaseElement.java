@@ -13,7 +13,7 @@ public class BaseElement extends Component
     public void operation()
     {
 
-        System.out.println(name);
+        //System.out.println(name);
     }
 
     @Override

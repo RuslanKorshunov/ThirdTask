@@ -27,17 +27,27 @@ public class Composite extends Component
         this.name=name;
     }
 
-    public void operation()
+    public void operation()//TODO спросить об этом "шедевре"
     {
         for(Component component: components)
         {
             if(component.getClass()==BaseElement.class)
             {
-
+                if(components.indexOf(component)==0)
+                {
+                    Component baseComponent=new BaseElement("PLATINUM");
+                    components.add(baseComponent);
+                    break;//TODO так можно делать?
+                }
+                else
+                {
+                    Component baseComponent=new BaseElement("1000");
+                    components.add(baseComponent);
+                    break;//TODO так можно делать?
+                }
             }
+            component.operation();
         }
-        /*System.out.println(name);
-        components.forEach(Component::operation);*/
     }
 
     @Override
@@ -77,7 +87,8 @@ public class Composite extends Component
         String data= excelData.getData();
         if(name.equals(dataParent) && !data.equals(dataParent))
         {
-            if(excelData.getCellType().equals(CellType.FORMULA))
+            CellType cellType=excelData.getCellType();
+            if(cellType.equals(CellType.FORMULA))
             {
                 try
                 {
@@ -129,10 +140,63 @@ public class Composite extends Component
     }
 
     @Override
+    public int size()
+    {
+        return components.size();
+    }
+
+    @Override
+    public int findHightOfTableHeader()
+    {
+        return super.findHightOfTableHeader();
+    }
+
+    @Override
+    public int findHight()
+    {
+        int hight=0;
+        hight=findHightOfComponent(hight, components);
+        return hight;
+    }
+
+    private int findHightOfComponent(int hight, List<Component> components)
+    {
+        int result=hight;
+        if(components!=null)
+        {
+            if(components.get(0).getClass()==BaseElement.class)
+            {
+                result+=components.size();
+            }
+            else
+            {
+                hight++;
+                result=hight;
+                for(Component component: components)
+                {
+                    int hightCurrent=findHightOfComponent(hight, component.getComponents());
+                    if(hightCurrent>result)
+                    {
+                        result=hightCurrent;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    protected List<Component> getComponents()
+    {
+        return components;
+    }
+
+    @Override
     public String toString()
     {
-        StringBuilder result=new StringBuilder(name+"\n");
+        /*StringBuilder result=new StringBuilder(name+"\n");
         components.forEach(component -> result.append(component.toString()));
-        return result.toString();
+        return result.toString();*/
+        return name;
     }
 }

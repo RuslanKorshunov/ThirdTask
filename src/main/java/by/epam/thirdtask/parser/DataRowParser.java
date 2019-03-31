@@ -20,15 +20,23 @@ public class DataRowParser extends RowParser
     }
 
     @Override
-    public void parse(Composite composite2Main, List<String> parents) throws IncorrectDataException
+    public void parse(Composite composite, List<String> parents) throws IncorrectDataException
     {
+        if(composite==null)
+        {
+            throw new IncorrectDataException("composite can't be null.");
+        }
+        if(parents==null)
+        {
+            throw new IncorrectDataException("parents can't be null.");
+        }
         ExcelReader excelReader=new ExcelReader();
         try
         {
             List<ExcelData> cells=excelReader.read(getRowNumber());
             if(cells.size()!=parents.size())
             {
-                throw new IncorrectDataException("Size of cells isn't equal to size of parents");
+                throw new IncorrectDataException("Size of cells isn't equal to size of parents.");
             }
             for(int index=0; index<cells.size(); index++)
             {
@@ -37,12 +45,12 @@ public class DataRowParser extends RowParser
             }
             for(ExcelData cell: cells)
             {
-                composite2Main.addNewBaseElement(cell);
+                composite.addNewBaseElement(cell);
             }
             if(excelReader.hasNextRow(getRowNumber()))
             {
                 RowParser parser=new DataRowParser(getRowNumber()+1);
-                parser.parse(composite2Main, parents);
+                parser.parse(composite, parents);
             }
         }
         catch (IOException e)

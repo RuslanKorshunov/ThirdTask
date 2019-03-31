@@ -21,22 +21,26 @@ public class TableHeaderRowParser extends RowParser
     }
 
     @Override
-    public void parse(Composite composite2Main) throws IncorrectDataException
+    public void parse(Composite composite) throws IncorrectDataException
     {
+        if(composite==null)
+        {
+            throw new IncorrectDataException("composite can't be null.");
+        }
         ExcelReader excelReader=new ExcelReader();
         try
         {
             List<ExcelData> dataAll=excelReader.read(getRowNumber());
             for(ExcelData data: dataAll)
             {
-                composite2Main.addNewComponent(data);
+                composite.addNewComponent(data);
             }
             if(excelReader.hasNextRow(getRowNumber()))
             {
                 if(excelReader.hasMergedRegions(getRowNumber()+1))
                 {
                     RowParser parser=new TableHeaderRowParser(getRowNumber()+1);
-                    parser.parse(composite2Main);
+                    parser.parse(composite);
                 }
                 else
                 {
@@ -47,7 +51,7 @@ public class TableHeaderRowParser extends RowParser
                         parents.add(parent);
                     }
                     RowParser parser=new DataRowParser(getRowNumber()+1);
-                    parser.parse(composite2Main, parents);
+                    parser.parse(composite, parents);
                 }
             }
         }

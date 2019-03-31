@@ -2,6 +2,8 @@ package by.epam.thirdtask.composite;
 
 import by.epam.thirdtask.entity.ExcelData;
 
+import java.util.List;
+
 public abstract class Component
 {
     public void operation()
@@ -35,6 +37,26 @@ public abstract class Component
     }
 
     public String getName()
+    {
+        return null;
+    }
+
+    public int size()
+    {
+        return -1;
+    }
+
+    public int findHightOfTableHeader()
+    {
+        return -1;
+    }
+
+    public int findHight()
+    {
+        return -1;
+    }
+
+    protected List<Component> getComponents()
     {
         return null;
     }

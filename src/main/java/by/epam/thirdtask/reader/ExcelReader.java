@@ -39,6 +39,9 @@ public class ExcelReader
                 }
             }
         }
+
+        XSSFWorkbook workbook=sheet.getWorkbook();
+        workbook.close();
         return cells;
     }
 
@@ -139,12 +142,12 @@ public class ExcelReader
         return name;
     }
 
-    private XSSFSheet findSheet() throws IOException
+    private XSSFSheet findSheet() throws IOException//TODO заменить на свое собственное?
     {
-        final int numberOfSheet=0;
+        final int NUMBER_OF_SHEET=0;
         File file=new File(filePath);
         FileInputStream inputStream=new FileInputStream(file);
         XSSFWorkbook workbook=new XSSFWorkbook(inputStream);
-        return workbook.getSheetAt(numberOfSheet);
+        return workbook.getSheetAt(NUMBER_OF_SHEET);
     }
 }
