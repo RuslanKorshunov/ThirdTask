@@ -1,20 +1,16 @@
 package by.epam.thirdtask.parser;
 
 import by.epam.thirdtask.composite.Composite;
-import by.epam.thirdtask.entity.ExcelCell;
+import by.epam.thirdtask.entity.CellData;
 import by.epam.thirdtask.exception.IncorrectDataException;
 import by.epam.thirdtask.exception.WorkWithFileException;
 import by.epam.thirdtask.reader.ExcelReader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TableHeaderRowParser extends RowParser
 {
-    private static final Logger logger= LogManager.getLogger(TableHeaderRowParser.class);
-
     public TableHeaderRowParser(int rowNumber) throws IncorrectDataException
     {
         super(rowNumber);
@@ -28,8 +24,8 @@ public class TableHeaderRowParser extends RowParser
             throw new IncorrectDataException("composite can't be null.");
         }
         ExcelReader excelReader=new ExcelReader();
-        List<ExcelCell> cells=excelReader.read(getRowNumber());
-        for(ExcelCell cell: cells)
+        List<CellData> cells=excelReader.read(getRowNumber());
+        for(CellData cell: cells)
         {
             composite.addNewComponent(cell);
         }
@@ -43,7 +39,7 @@ public class TableHeaderRowParser extends RowParser
             else
             {
                 List<String> parents=new ArrayList<>();
-                for(ExcelCell cell : cells)
+                for(CellData cell : cells)
                 {
                     String parent= cell.getData();
                     parents.add(parent);

@@ -1,6 +1,6 @@
 package by.epam.thirdtask.composite;
 
-import by.epam.thirdtask.entity.ExcelCell;
+import by.epam.thirdtask.entity.CellData;
 
 import java.util.List;
 
@@ -14,12 +14,12 @@ public abstract class Component
         return false;
     }
 
-    public boolean addNewComponent(ExcelCell excelCell)
+    public boolean addNewComponent(CellData cellData)
     {
         return false;
     }
 
-    public boolean addNewBaseElement(ExcelCell excelCell)
+    public boolean addNewBaseElement(CellData cellData)
     {
         return false;
     }
@@ -43,15 +43,10 @@ public abstract class Component
     {
         return -1;
     }
-
-    public int findHightOfTableHeader()
+    
+    public CellData getCellData()
     {
-        return -1;
-    }
-
-    public int findHight()
-    {
-        return -1;
+        return null;
     }
 
     protected List<Component> getComponents()

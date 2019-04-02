@@ -1,31 +1,31 @@
 package by.epam.thirdtask.composite;
 
+import by.epam.thirdtask.entity.CellData;
+
 public class BaseElement extends Component
 {
-    private String name;
+    private CellData cellData;
 
-    public BaseElement(String name)
+    public BaseElement(CellData cellData)
     {
-        this.name=name;
-    }
-
-    @Override
-    public void operation()
-    {
-
-        //System.out.println(name);
+        this.cellData = cellData;
     }
 
     @Override
     public String getName()
     {
-        return name;
+        return cellData.getData();
+    }
+
+    @Override
+    public CellData getCellData()
+    {
+        return cellData;
     }
 
     @Override
     public String toString()
     {
-        StringBuilder result=new StringBuilder(name+"\n");
-        return result.toString();
+        return getName()+"\n";
     }
 }

@@ -2,7 +2,7 @@ package by.epam.thirdtask.entity;
 
 import org.apache.poi.ss.usermodel.CellType;
 
-public class ExcelCell
+public class CellData
 {
     private String data;
     private String parentData;
@@ -12,13 +12,13 @@ public class ExcelCell
     private int lastColumn;
     private CellType cellType;
 
-    public ExcelCell(String data,
-                     String parentData,
-                     int firstRow,
-                     int lastRow,
-                     int firstColumn,
-                     int lastColumn,
-                     CellType cellType)
+    public CellData(String data,
+                    String parentData,
+                    int firstRow,
+                    int lastRow,
+                    int firstColumn,
+                    int lastColumn,
+                    CellType cellType)
     {
         this.data = data;
         this.parentData = parentData;
@@ -87,7 +87,7 @@ public class ExcelCell
 
     @Override
     public String toString() {
-        return "ExcelCell{" +
+        return "CellData{" +
                 "data='" + data + '\'' +
                 ", parentData='" + parentData + '\'' +
                 ", firstRow=" + firstRow +

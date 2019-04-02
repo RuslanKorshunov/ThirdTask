@@ -1,6 +1,6 @@
 package by.epam.thirdtask.composite;
 
-import by.epam.thirdtask.entity.ExcelCell;
+import by.epam.thirdtask.entity.CellData;
 import by.epam.thirdtask.exception.IncorrectDataException;
 import by.epam.thirdtask.exception.WorkWithFileException;
 import by.epam.thirdtask.parser.RowParser;
@@ -25,7 +25,7 @@ public class CompositeTest
     @Test
     public void addNewComponentPositive()
     {
-        ExcelCell cell=new ExcelCell("NEW", "PLAYER",0, 0, 12, 13, CellType.STRING);
+        CellData cell=new CellData("NEW", "PLAYER",0, 0, 12, 13, CellType.STRING);
         boolean actual=composite.addNewComponent(cell);
         assertTrue(actual);
     }
@@ -33,7 +33,7 @@ public class CompositeTest
     @Test(dependsOnMethods = "addNewComponentPositive")
     public void addNewComponentNegative()
     {
-        ExcelCell cell=new ExcelCell("PLAYER", "SUPER_PLAYER",0, 0, 12, 13, CellType.STRING);
+        CellData cell=new CellData("PLAYER", "SUPER_PLAYER",0, 0, 12, 13, CellType.STRING);
         boolean actual=composite.addNewComponent(cell);
         assertFalse(actual);
     }
@@ -41,7 +41,7 @@ public class CompositeTest
     @Test(dependsOnMethods = "addNewComponentNegative")
     public void addNewBaseElementPositive()
     {
-        ExcelCell cell=new ExcelCell("AURUM", "PLAYER",0, 0, 12, 13, CellType.STRING);
+        CellData cell=new CellData("AURUM", "PLAYER",0, 0, 12, 13, CellType.STRING);
         boolean actual=composite.addNewBaseElement(cell);
         assertTrue(actual);
     }
@@ -49,7 +49,7 @@ public class CompositeTest
     @Test(dependsOnMethods = "addNewBaseElementPositive")
     public void addNewBaseElementNegative()
     {
-        ExcelCell cell=new ExcelCell("AURUM", "SUPER_PLAYER",0, 0, 12, 13, CellType.STRING);
+        CellData cell=new CellData("AURUM", "SUPER_PLAYER",0, 0, 12, 13, CellType.STRING);
         boolean actual=composite.addNewBaseElement(cell);
         assertFalse(actual);
     }

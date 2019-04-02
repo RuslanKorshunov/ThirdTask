@@ -1,7 +1,7 @@
 package by.epam.thirdtask.composite;
 
 import by.epam.thirdtask.action.PolishNotationAction;
-import by.epam.thirdtask.entity.ExcelCell;
+import by.epam.thirdtask.entity.CellData;
 import by.epam.thirdtask.exception.IncorrectDataException;
 import by.epam.thirdtask.translator.PolishNotationTranslator;
 import org.apache.logging.log4j.LogManager;
@@ -15,17 +15,23 @@ public class Composite extends Component
 {
     private static final Logger logger= LogManager.getLogger(Composite.class);
 
-    private String name;
+    private CellData cellData;
     private List<Component> components =new ArrayList<>();
 
     public Composite()
     {
-        name="";
+        cellData =new CellData("",
+                                "",
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                CellType._NONE);
     }
 
-    public Composite(String name)
+    public Composite(CellData cellData)
     {
-        this.name=name;
+        this.cellData = cellData;
     }
 
     public void operation()
@@ -35,6 +41,14 @@ public class Composite extends Component
         if(component.getClass()==BaseElement.class)
         {
             components.remove(component);
+            for(Component componentCurrent: components)
+            {
+                CellData cellData=componentCurrent.getCellData();
+                int firstRow=cellData.getFirstRow()-1;
+                int lastRow=cellData.getLastRow()-1;
+                cellData.setFirstRow(firstRow);
+                cellData.setLastRow(lastRow);
+            }
         }
         else
         {
@@ -49,14 +63,14 @@ public class Composite extends Component
     }
 
     @Override
-    public boolean addNewComponent(ExcelCell excelCell)
+    public boolean addNewComponent(CellData cell)
     {
         boolean result=false;
-        String dataParent= excelCell.getParentData();
-        String data= excelCell.getData();
-        if(name.equals(dataParent) && !data.equals(dataParent))
+        String dataParent= cell.getParentData();
+        String data=cell.getData();
+        if(getName().equals(dataParent) && !data.equals(dataParent))
         {
-            Component component=new Composite(data);
+            Component component=new Composite(cell);
             result=components.add(component);
         }
         else
@@ -65,7 +79,7 @@ public class Composite extends Component
             {
                 if(!result)
                 {
-                    result=component.addNewComponent(excelCell);
+                    result=component.addNewComponent(cell);
                 }
             }
         }
@@ -73,14 +87,14 @@ public class Composite extends Component
     }
 
     @Override
-    public boolean addNewBaseElement(ExcelCell excelCell)
+    public boolean addNewBaseElement(CellData cell)
     {
         boolean result=false;
-        String dataParent= excelCell.getParentData();
-        String data= excelCell.getData();
-        if(name.equals(dataParent) && !data.equals(dataParent))
+        String dataParent= cell.getParentData();
+        String data= cell.getData();
+        if(getName().equals(dataParent) && !data.equals(dataParent))
         {
-            CellType cellType= excelCell.getCellType();
+            CellType cellType=cell.getCellType();
             if(cellType.equals(CellType.FORMULA))
             {
                 try
@@ -96,7 +110,8 @@ public class Composite extends Component
                     data="";
                 }
             }
-            Component baseElement=new BaseElement(data);
+            cell.setData(data);
+            Component baseElement=new BaseElement(cell);
             result=components.add(baseElement);
         }
         else
@@ -105,7 +120,7 @@ public class Composite extends Component
             {
                 if(!result)
                 {
-                    result=component.addNewBaseElement(excelCell);
+                    result=component.addNewBaseElement(cell);
                 }
             }
         }
@@ -127,7 +142,7 @@ public class Composite extends Component
     @Override
     public String getName()
     {
-        return name;
+        return cellData.getData();
     }
 
     @Override
@@ -145,74 +160,14 @@ public class Composite extends Component
     @Override
     public String toString()
     {
-        StringBuilder result=new StringBuilder(name+"\n");
+        StringBuilder result=new StringBuilder(getName()+"\n");
         components.forEach(component -> result.append(component.toString()));
         return result.toString();
     }
 
-
-    //TODO нужно удалить
     @Override
-    public int findHightOfTableHeader()
+    public CellData getCellData()
     {
-        int height=0;
-        height=findHeightWithoutBaseElements(height, components);
-        return height;
-    }
-
-    //TODO нужно удалить
-    @Override
-    public int findHight()
-    {
-        int hight=0;
-        hight=findHightOfComponent(hight, components);
-        return hight;
-    }
-
-    //TODO возможно, нужно удалить
-    private int findHightOfComponent(int hight, List<Component> components)
-    {
-        int result=hight;
-        if(components!=null)
-        {
-            if(components.get(0).getClass()==BaseElement.class)
-            {
-                result+=components.size();
-            }
-            else
-            {
-                hight++;
-                result=hight;
-                for(Component component: components)
-                {
-                    int hightCurrent=findHightOfComponent(hight, component.getComponents());
-                    if(hightCurrent>result)
-                    {
-                        result=hightCurrent;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    //TODO возможно, нужно удалить
-    private int findHeightWithoutBaseElements(int hight, List<Component> components)
-    {
-        int result=hight;
-        if(components!=null && components.get(0).getClass()!=BaseElement.class)
-        {
-            hight++;
-            result=hight;
-            for(Component component: components)
-            {
-                int hightCurrent=findHeightWithoutBaseElements(hight, component.getComponents());
-                if(hightCurrent>result)
-                {
-                    result=hightCurrent;
-                }
-            }
-        }
-        return result;
+        return cellData;
     }
 }
