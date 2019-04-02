@@ -8,6 +8,6 @@ public class TableHeaderRowParserTest {
     public void testParse()
     {
         /*RowParser firstRowParser=new TableHeaderRowParser(0);
-        firstRowParser.parse();*/
+        firstRowParser.translate();*/
     }
 }

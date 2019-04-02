@@ -2,18 +2,28 @@ package by.epam.thirdtask.entity;
 
 import org.apache.poi.ss.usermodel.CellType;
 
-public class ExcelData //TODO спросить про имя и куда вынести
+public class ExcelCell
 {
     private String data;
     private String parentData;
+    private int firstRow;
+    private int lastRow;
     private int firstColumn;
     private int lastColumn;
     private CellType cellType;
 
-    public ExcelData(String data, String parentData, int firstColumn, int lastColumn, CellType cellType)
+    public ExcelCell(String data,
+                     String parentData,
+                     int firstRow,
+                     int lastRow,
+                     int firstColumn,
+                     int lastColumn,
+                     CellType cellType)
     {
         this.data = data;
         this.parentData = parentData;
+        this.firstRow=firstRow;
+        this.lastRow=lastRow;
         this.firstColumn=firstColumn;
         this.lastColumn=lastColumn;
         this.cellType=cellType;
@@ -59,11 +69,29 @@ public class ExcelData //TODO спросить про имя и куда вын�
         this.cellType = cellType;
     }
 
+    public int getFirstRow() {
+        return firstRow;
+    }
+
+    public void setFirstRow(int firstRow) {
+        this.firstRow = firstRow;
+    }
+
+    public int getLastRow() {
+        return lastRow;
+    }
+
+    public void setLastRow(int lastRow) {
+        this.lastRow = lastRow;
+    }
+
     @Override
     public String toString() {
-        return "ExcelData{" +
+        return "ExcelCell{" +
                 "data='" + data + '\'' +
                 ", parentData='" + parentData + '\'' +
+                ", firstRow=" + firstRow +
+                ", lastRow=" + lastRow +
                 ", firstColumn=" + firstColumn +
                 ", lastColumn=" + lastColumn +
                 ", cellType=" + cellType +

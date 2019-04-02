@@ -2,13 +2,11 @@ package by.epam.thirdtask.main;
 
 import by.epam.thirdtask.composite.Composite;
 import by.epam.thirdtask.exception.IncorrectDataException;
+import by.epam.thirdtask.exception.WorkWithFileException;
 import by.epam.thirdtask.parser.RowParser;
 import by.epam.thirdtask.parser.TableHeaderRowParser;
-import by.epam.thirdtask.writer.ExcelWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
 
 public class Main
 {
@@ -21,19 +19,22 @@ public class Main
         {
             RowParser parser=new TableHeaderRowParser(0);
             parser.parse(composite2);
+            composite2.operation();
+            System.out.println(composite2.toString());
+            //new ExcelWriter().write(composite2);
             /*composite2.operation();
             System.out.println(composite2.toString());*/
-            System.out.println(composite2.findHight());
+            //System.out.println(composite2.findHight());
         }
-        catch(IncorrectDataException e)
+        catch(WorkWithFileException|IncorrectDataException e)
         {
             logger.error(e);
         }
 /*        try
         {
-            //String str=new MathAction().calculateReversePolishNotation("( 8 + 2 + 3 * 6 ) * 15 - 10 / 2");
-            String str=new MathAction().calculateReversePolishNotation("( 70 / 2 + 7 ) / 3 + 8 - 100 * -1");
-            //System.out.println(new MathAction().calculate(str));
+            //String str=new PolishNotationTranslator().translate("( 8 + 2 + 3 * 6 ) * 15 - 10 / 2");
+            String str=new PolishNotationTranslator().translate("( 70 / 2 + 7 ) / 3 + 8 - 100 * -1");
+            //System.out.println(new PolishNotationTranslator().calculate(str));
         }
         catch (IncorrectDataException e)
         {

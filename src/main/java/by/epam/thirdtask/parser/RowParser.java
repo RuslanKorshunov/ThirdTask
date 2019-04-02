@@ -2,6 +2,7 @@ package by.epam.thirdtask.parser;
 
 import by.epam.thirdtask.composite.Composite;
 import by.epam.thirdtask.exception.IncorrectDataException;
+import by.epam.thirdtask.exception.WorkWithFileException;
 
 import java.util.List;
 
@@ -18,9 +19,9 @@ public abstract class RowParser
         this.rowNumber=rowNumber;
     }
 
-    public void parse(Composite composite2Main) throws IncorrectDataException {}
+    public void parse(Composite composite) throws IncorrectDataException, WorkWithFileException {}
 
-    public void parse(Composite composite2Main, List<String> parents) throws IncorrectDataException {}
+    public void parse(Composite composite, List<String> parents) throws IncorrectDataException, WorkWithFileException {}
 
     protected int getRowNumber()
     {

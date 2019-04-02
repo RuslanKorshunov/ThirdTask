@@ -5,10 +5,14 @@ import by.epam.thirdtask.exception.IncorrectDataException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReversePolishNotationParser
+public class PolishNotationParser
 {
     public List<MathExpression> parse(String polishNotation) throws IncorrectDataException
     {
+        if(polishNotation==null)
+        {
+            throw new IncorrectDataException("polishNotation can't be null.");
+        }
         List<MathExpression> result=new ArrayList<>();
 
         for(String symbol: polishNotation.split(InterpreterConstant.SPACE))
@@ -30,11 +34,12 @@ public class ReversePolishNotationParser
                 default:
                     try
                     {
-                        result.add(c->c.push(Double.parseDouble(symbol)));
+                        Double number=Double.parseDouble(symbol);
+                        result.add(c->c.push(number));
                     }
-                    catch(NumberFormatException e)//TODO правильно ли так делать?
+                    catch(NumberFormatException e)
                     {
-                        throw new IncorrectDataException("polishNotation can't have "+symbol+".");
+                        throw new IncorrectDataException("polishNotation can't have \""+symbol+"\".");
                     }
             }
         }

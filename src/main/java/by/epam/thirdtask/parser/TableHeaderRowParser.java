@@ -1,19 +1,19 @@
 package by.epam.thirdtask.parser;
 
 import by.epam.thirdtask.composite.Composite;
-import by.epam.thirdtask.entity.ExcelData;
+import by.epam.thirdtask.entity.ExcelCell;
 import by.epam.thirdtask.exception.IncorrectDataException;
+import by.epam.thirdtask.exception.WorkWithFileException;
 import by.epam.thirdtask.reader.ExcelReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TableHeaderRowParser extends RowParser
 {
-    private static Logger logger= LogManager.getLogger(TableHeaderRowParser.class);
+    private static final Logger logger= LogManager.getLogger(TableHeaderRowParser.class);
 
     public TableHeaderRowParser(int rowNumber) throws IncorrectDataException
     {
@@ -21,43 +21,36 @@ public class TableHeaderRowParser extends RowParser
     }
 
     @Override
-    public void parse(Composite composite) throws IncorrectDataException
+    public void parse(Composite composite) throws IncorrectDataException, WorkWithFileException
     {
         if(composite==null)
         {
             throw new IncorrectDataException("composite can't be null.");
         }
         ExcelReader excelReader=new ExcelReader();
-        try
+        List<ExcelCell> cells=excelReader.read(getRowNumber());
+        for(ExcelCell cell: cells)
         {
-            List<ExcelData> dataAll=excelReader.read(getRowNumber());
-            for(ExcelData data: dataAll)
-            {
-                composite.addNewComponent(data);
-            }
-            if(excelReader.hasNextRow(getRowNumber()))
-            {
-                if(excelReader.hasMergedRegions(getRowNumber()+1))
-                {
-                    RowParser parser=new TableHeaderRowParser(getRowNumber()+1);
-                    parser.parse(composite);
-                }
-                else
-                {
-                    List<String> parents=new ArrayList<>();
-                    for(ExcelData excelData: dataAll)
-                    {
-                        String parent=excelData.getData();
-                        parents.add(parent);
-                    }
-                    RowParser parser=new DataRowParser(getRowNumber()+1);
-                    parser.parse(composite, parents);
-                }
-            }
+            composite.addNewComponent(cell);
         }
-        catch (IOException e)
+        if(excelReader.hasNextRow(getRowNumber()))
         {
-            logger.error(e);
+            if(excelReader.hasMergedRegions(getRowNumber()+1))
+            {
+                RowParser parser=new TableHeaderRowParser(getRowNumber()+1);
+                parser.parse(composite);
+            }
+            else
+            {
+                List<String> parents=new ArrayList<>();
+                for(ExcelCell cell : cells)
+                {
+                    String parent= cell.getData();
+                    parents.add(parent);
+                }
+                RowParser parser=new DataRowParser(getRowNumber()+1);
+                parser.parse(composite, parents);
+            }
         }
     }
 

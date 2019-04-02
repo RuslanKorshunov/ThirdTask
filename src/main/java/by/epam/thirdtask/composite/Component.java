@@ -1,27 +1,25 @@
 package by.epam.thirdtask.composite;
 
-import by.epam.thirdtask.entity.ExcelData;
+import by.epam.thirdtask.entity.ExcelCell;
 
 import java.util.List;
 
 public abstract class Component
 {
     public void operation()
-    {
-        //throw new UnsupportedOperationException(getClass().getName()+" doesn't support this operation");
-    }
+    {}
 
     public boolean addNewComponent(Component component)
     {
         return false;
     }
 
-    public boolean addNewComponent(ExcelData excelData)
+    public boolean addNewComponent(ExcelCell excelCell)
     {
         return false;
     }
 
-    public boolean addNewBaseElement(ExcelData excelData)
+    public boolean addNewBaseElement(ExcelCell excelCell)
     {
         return false;
     }

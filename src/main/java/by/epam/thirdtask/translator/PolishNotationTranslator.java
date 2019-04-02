@@ -1,18 +1,14 @@
-package by.epam.thirdtask.action;
+package by.epam.thirdtask.translator;
 
 import by.epam.thirdtask.exception.IncorrectDataException;
-import by.epam.thirdtask.interpreter.Context;
 import by.epam.thirdtask.interpreter.InterpreterConstant;
-import by.epam.thirdtask.interpreter.MathExpression;
-import by.epam.thirdtask.interpreter.ReversePolishNotationParser;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.List;
 
-public class MathAction//TODO как назвать класс?
+public class PolishNotationTranslator
 {
-    public String calculateReversePolishNotation(String formula) throws IncorrectDataException
+    public String translate(String formula) throws IncorrectDataException
     {
         if(formula==null)
         {
@@ -30,7 +26,7 @@ public class MathAction//TODO как назвать класс?
                     {
                         if(!deque.peekLast().equals(InterpreterConstant.LEFT_BRACKET))
                         {
-                            String symbol=deque.pollLast();//TODO излишне?
+                            String symbol=deque.pollLast();
                             exit.append(symbol+" ");
                         }
                     }
@@ -66,7 +62,7 @@ public class MathAction//TODO как назвать класс?
                     {
                         exit.append(Double.parseDouble(symbolCurrent)+" ");
                     }
-                    catch(NumberFormatException e)//TODO правильно ли так делать?
+                    catch(NumberFormatException e)
                     {
                         throw new IncorrectDataException("formula can't have "+symbolCurrent+".");
                     }
@@ -78,23 +74,5 @@ public class MathAction//TODO как назвать класс?
             exit.append(symbol+" ");
         }
         return exit.toString();
-    }
-
-    //TODO куда вынести метод
-    public String calculate(String polishNotation) throws IncorrectDataException
-    {
-        if(polishNotation==null)
-        {
-            throw new IncorrectDataException("polishNotation can't be null.");
-        }
-        if(polishNotation.equals(""))
-        {
-            throw new IncorrectDataException("polishNotation can't be empty.");
-        }
-        ReversePolishNotationParser parser=new ReversePolishNotationParser();
-        List<MathExpression> mathExpressionList=parser.parse(polishNotation);
-        Context context=new Context();
-        mathExpressionList.forEach((mathExpression)->mathExpression.interpret(context));
-        return String.valueOf(context.pop());
     }
 }

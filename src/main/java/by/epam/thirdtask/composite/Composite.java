@@ -1,8 +1,9 @@
 package by.epam.thirdtask.composite;
 
-import by.epam.thirdtask.action.MathAction;
-import by.epam.thirdtask.entity.ExcelData;
+import by.epam.thirdtask.action.PolishNotationAction;
+import by.epam.thirdtask.entity.ExcelCell;
 import by.epam.thirdtask.exception.IncorrectDataException;
+import by.epam.thirdtask.translator.PolishNotationTranslator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.CellType;
@@ -27,26 +28,17 @@ public class Composite extends Component
         this.name=name;
     }
 
-    public void operation()//TODO спросить об этом "шедевре"
+    public void operation()
     {
-        for(Component component: components)
+        final int index=0;
+        Component component=components.get(index);
+        if(component.getClass()==BaseElement.class)
         {
-            if(component.getClass()==BaseElement.class)
-            {
-                if(components.indexOf(component)==0)
-                {
-                    Component baseComponent=new BaseElement("PLATINUM");
-                    components.add(baseComponent);
-                    break;//TODO так можно делать?
-                }
-                else
-                {
-                    Component baseComponent=new BaseElement("1000");
-                    components.add(baseComponent);
-                    break;//TODO так можно делать?
-                }
-            }
-            component.operation();
+            components.remove(component);
+        }
+        else
+        {
+            components.forEach(Component::operation);
         }
     }
 
@@ -57,11 +49,11 @@ public class Composite extends Component
     }
 
     @Override
-    public boolean addNewComponent(ExcelData excelData)
+    public boolean addNewComponent(ExcelCell excelCell)
     {
         boolean result=false;
-        String dataParent= excelData.getParentData();
-        String data= excelData.getData();
+        String dataParent= excelCell.getParentData();
+        String data= excelCell.getData();
         if(name.equals(dataParent) && !data.equals(dataParent))
         {
             Component component=new Composite(data);
@@ -69,32 +61,34 @@ public class Composite extends Component
         }
         else
         {
-            components.forEach(component -> component.addNewComponent(excelData));
-            /*for(Component component: components)
+            for(Component component: components)
             {
-                result=component.addNewComponent(excelData);
-                //TODO спросить про использование прерываний
-            }*/
+                if(!result)
+                {
+                    result=component.addNewComponent(excelCell);
+                }
+            }
         }
         return result;
     }
 
     @Override
-    public boolean addNewBaseElement(ExcelData excelData)
+    public boolean addNewBaseElement(ExcelCell excelCell)
     {
         boolean result=false;
-        String dataParent= excelData.getParentData();
-        String data= excelData.getData();
+        String dataParent= excelCell.getParentData();
+        String data= excelCell.getData();
         if(name.equals(dataParent) && !data.equals(dataParent))
         {
-            CellType cellType=excelData.getCellType();
+            CellType cellType= excelCell.getCellType();
             if(cellType.equals(CellType.FORMULA))
             {
                 try
                 {
-                    MathAction mathAction=new MathAction();
-                    String polishNotation=mathAction.calculateReversePolishNotation(data);
-                    data=mathAction.calculate(polishNotation);
+                    PolishNotationTranslator polishNotationTranslator =new PolishNotationTranslator();
+                    PolishNotationAction polishNotationAction=new PolishNotationAction();
+                    String polishNotation= polishNotationTranslator.translate(data);
+                    data=polishNotationAction.calculate(polishNotation);
                 }
                 catch(IncorrectDataException e)
                 {
@@ -107,16 +101,13 @@ public class Composite extends Component
         }
         else
         {
-            components.forEach(component -> component.addNewBaseElement(excelData));
-            /*for(Component component: components)
+            for(Component component: components)
             {
-                result=component.addNewBaseElement(excelData);
-                if(result)
+                if(!result)
                 {
-                    break;
+                    result=component.addNewBaseElement(excelCell);
                 }
-                //TODO спросить про использование прерываний
-            }*/
+            }
         }
         return result;
     }
@@ -146,11 +137,30 @@ public class Composite extends Component
     }
 
     @Override
-    public int findHightOfTableHeader()
+    protected List<Component> getComponents()
     {
-        return super.findHightOfTableHeader();
+        return components;
     }
 
+    @Override
+    public String toString()
+    {
+        StringBuilder result=new StringBuilder(name+"\n");
+        components.forEach(component -> result.append(component.toString()));
+        return result.toString();
+    }
+
+
+    //TODO нужно удалить
+    @Override
+    public int findHightOfTableHeader()
+    {
+        int height=0;
+        height=findHeightWithoutBaseElements(height, components);
+        return height;
+    }
+
+    //TODO нужно удалить
     @Override
     public int findHight()
     {
@@ -159,6 +169,7 @@ public class Composite extends Component
         return hight;
     }
 
+    //TODO возможно, нужно удалить
     private int findHightOfComponent(int hight, List<Component> components)
     {
         int result=hight;
@@ -185,18 +196,23 @@ public class Composite extends Component
         return result;
     }
 
-    @Override
-    protected List<Component> getComponents()
+    //TODO возможно, нужно удалить
+    private int findHeightWithoutBaseElements(int hight, List<Component> components)
     {
-        return components;
-    }
-
-    @Override
-    public String toString()
-    {
-        /*StringBuilder result=new StringBuilder(name+"\n");
-        components.forEach(component -> result.append(component.toString()));
-        return result.toString();*/
-        return name;
+        int result=hight;
+        if(components!=null && components.get(0).getClass()!=BaseElement.class)
+        {
+            hight++;
+            result=hight;
+            for(Component component: components)
+            {
+                int hightCurrent=findHeightWithoutBaseElements(hight, component.getComponents());
+                if(hightCurrent>result)
+                {
+                    result=hightCurrent;
+                }
+            }
+        }
+        return result;
     }
 }
